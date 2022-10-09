@@ -245,3 +245,15 @@
 > Vì request là chuỗi json nên sẽ làm list passwd như sau: ![img](../asset/Authentication-vulnerabilities-5-Broken-brute-force-protection-multiple-credentials-per-request-0.png) ![img](../asset/Authentication-vulnerabilities-5-Broken-brute-force-protection-multiple-credentials-per-request-1.png) ![img](../asset/Authentication-vulnerabilities-5-Broken-brute-force-protection-multiple-credentials-per-request-2.png)
 
 > file passwd + user: https://gist.github.com/saamnguyen/1f63d5aa9c771021bb6a4573c24489e9
+
+---
+
+### HTTP basic authentication
+
+> Client sẽ nhận được authentication token từ server, code này được ghép từ tên của user và passwd và encode từ Base64. Nó sẽ được lưu trên trình duyệt và sẽ được tự động thêm vào `Authorizaton` header
+>
+> ```
+> Authorization: Basic base64(username:password)
+> ```
+
+> Đây sẽ không phải là authetication method an toàn, vì nó liên quan tới info login của user và có thể bị chặn bắt
