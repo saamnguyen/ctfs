@@ -234,7 +234,7 @@
 
 ---
 
-### User rate limiting
+#### User rate limiting
 
 > Một cách khác mà các trang web cố gắng chặn tấn công brute force là thông qua `user rate limit`. Nếu có quá nhiều yêu cầu login trên một ip thì sẽ khiến ip bị chặn
 
@@ -257,3 +257,33 @@
 > ```
 
 > Đây sẽ không phải là authetication method an toàn, vì nó liên quan tới info login của user và có thể bị chặn bắt
+
+---
+
+### Vulnerabilities in multi-factor authentication
+
+> Nhiều trang web sử dụng passwd để xác thực user. Tuy nhiên nhiều user chứng minh danh tính bằng nhiều yếu tố khác nhau
+
+> Việc xác minh bằng sinh trắc học là điều không thể với các trang web. Ngày nay người ta thấy xác thực 2 yếu tố là bắt buộc hoặc tùy chọn (2FA) . Ví dụ như gửi code về máy vật lý đang sở hữu
+
+#### Two-factor authentication tokens
+
+> User thường được xác minh từ một thiết bị vật lý nào đó, ví dụ như Google Authenticator
+
+> Tuy nhiên các code này không phải là do chính thiết bị tạo ra, nó có thể bị chặn bắt hoặc đổi sim....
+
+#### Bypassing two-factor authentication
+
+> Đôi khi việc triển khai two-factor authentication có thể bị thiếu sót đến mức có thể bỏ qua hoàn toàn
+
+> Nếu lần đầu tiên người dùng được nhắc nhập mật khẩu, sau đó nhắc nhập mã xác minh ở một trang riêng biệt. Trong trường hợp này nên nghiên cứu thử xem có thể redirect thẳng sang các trang `logged-in only`. Đôi khi web sẽ không thực sự kiểm tra xem có hoàn thành các bước sau hay không.
+
+##### Lab: 2FA simple bypass
+
+> Xác thực hai yếu tố của phòng thí nghiệm này có thể bị bỏ qua. Bạn đã có được tên người dùng và mật khẩu hợp lệ, nhưng không có quyền truy cập vào mã xác minh 2FA của người dùng. Để giải quyết phòng thí nghiệm, hãy truy cập trang tài khoản của Carlos.
+
+> wiener:peter, victim: carlos:montoya
+
+> Bài này chỉ cần login tài khoản của usr victim và khi web bắt nhập code thì redirect sang path `my-account` là solve ![img](../asset/Authentication-vulnerabilities-6-2FA-simple-bypass-0.png)
+
+> Vì khi scan path thì thấy path này: ![img](../asset/Authentication-vulnerabilities-6-2FA-simple-bypass-1.png)
