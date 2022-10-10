@@ -385,3 +385,51 @@
 > add payload là `mfa-code`: ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-10.png) ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-11.png)
 
 > Cho luồng là 1 lần thôi, nếu nhiều quá thì sẽ bị detect ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-12.png) ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-13.png)
+
+---
+
+### Vulnerabilities in other authentication mechanisms
+
+> Ngoài các chức năng cơ bản là login, ngoài ra các trang web thường cho user quản lí tài khoản của họ như cho phép đổi passwd. Cơ chế này cũng có thể có các vul để hacker có thể khai thác
+
+#### Keeping users logged in
+
+> Một tính năng phổ biến là duy trì login, sẽ có nút như `Remember me`
+
+> Tính năng này thường được triển khai với một loại token là `remember me`, sau đó sẽ được lưu trữ trong 1 cookie liên tục. Sở hữu loại cookie này thì có thể bỏ qua toàn bộ quy trình login. Một số trang web tạo cookie này bằng cách ghép nối, chẳng hạn như username + time create.
+
+> Hoặc hacker có thể tự tạo ra tài khoản rồi nghiên cứu cách tạo ra cookie đó...
+
+##### Lab: Brute-forcing a stay-logged-in cookie
+
+> Des: Lab này cho phép user login khi đã close browser. Cookie cũng dễ bị brute force
+
+> Để solve thì login vào tài khoản carlos và vào `my-account`
+
+> Your credentials: wiener:peter
+
+> Login với tài khoản đã được cho: ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-0.png)
+
+> Chặn bắt bẳng burp suite thấy: ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-1.png)
+
+> Cookie đã được set và encode ta đc username + mã hash md5: ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-2.png)
+
+> Để brute force được thì phải có đc cookie login on. Giờ đã biết được cách tạo cookie rồi thì ta lấy cookie của victim tôi: ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-3.png)
+
+> Send path `/my-account` sang intruder : ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-4.png)
+
+> Add payload: ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-5.png)
+
+> Thêm payload processing: ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-6.png) ![igm](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-7.png) ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-8.png)
+
+> Vì test nên sẽ cho passwd thật của tài khoản được cho: ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-9.png)
+
+> Vì là cookie đúng nên nó sẽ có đoạn là `Update email`: ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-11.png)
+
+> Nên khi attack lại thì thêm Grep-Match là update email để biết là attack thành công ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-9.png)
+
+> Attack lại: ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-12.png)
+
+> Sửa add prefix là carlos: ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-13.png) ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-14.png) ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-15.png) ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-16.png)
+
+---
