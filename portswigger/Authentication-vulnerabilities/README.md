@@ -433,3 +433,17 @@
 > Sửa add prefix là carlos: ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-13.png) ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-14.png) ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-15.png) ![img](../asset/Authentication-vulnerabilities-9-Brute-forcing-a-stay-logged-in-cookie-16.png)
 
 ---
+
+> Ngay cả khi attacker không thể tạo account riêng của họ thì vẫn có thể khai thác. Ví dụ như dùng XSS để đánh cắp cookie
+
+> Trong một số trường hợp hiếm hoi, có thể lấy được mật khẩu bản rõ từ cookie
+
+##### Lab: Offline password cracking
+
+> Des: Lab này lưu trữ mật khẩu hash của user từ cookie. Lab cũng chưa vul XSS trong chức năng bình luận. Để solve thì lấy cookie đã đăng nhập của carlos và crack passwd của carlos, sau đó login và xóa tài khoản
+
+> Your credentials: wiener:peter
+
+> Bài này bị dính XSS tại comment: ![img](../asset/Authentication-vulnerabilities-10-Offline-password-cracking-0.png)
+
+> Chèn script vào commit rồi gửi cookie qua server : ![img](../asset/Authentication-vulnerabilities-10-Offline-password-cracking-1.png) ![img](../asset/Authentication-vulnerabilities-10-Offline-password-cracking-2.png) ![img](../asset/Authentication-vulnerabilities-10-Offline-password-cracking-3.png)
