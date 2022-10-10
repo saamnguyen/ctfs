@@ -351,3 +351,37 @@
 > Tìm `Status code=302`: ![img](../asset/Authentication-vulnerabilities-7-2FA-broken-logic-4.png) ![img](../asset/Authentication-vulnerabilities-7-2FA-broken-logic-5.png)
 
 ---
+
+#### Brute-forcing 2FA verification codes
+
+> Giống như passwd thì các trang web sẽ cố gắng ngăn chặn việc attacker có thể brute force mã xác minh 2FA, vì thườn thì mã này sẽ có độ tài từ 4-6 kí tự. Nếu không có cách protect thì sẽ bị bẻ dễ dàng
+
+> Một số trang web sẽ tự động logout nếu user nhập một số mã incorrect . Điều này không ăn thua vì attacker có thể tự động hóa quy trình bằng cách sử dụng macro trong intruder
+
+##### Lab: 2FA bypass using a brute-force attack
+
+> Xác thực hai yếu tố của phòng thí nghiệm này dễ bị ép buộc. Bạn đã có được tên người dùng và mật khẩu hợp lệ, nhưng không có quyền truy cập vào mã xác minh 2FA của người dùng. Để giải quyết phòng thí nghiệm, hãy bắt buộc mã 2FA và truy cập trang tài khoản của Carlos.
+
+> Victim's credentials: carlos:montoya
+
+> Bài này khi nhập mã lần thứ 2 nếu sai sẽ tự động logout ra: ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-0.png)
+
+> Nên sẽ sử dụng macro để tự động hóa chương trình:
+>
+> - Giờ phải login vào path `GET /login/` ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-1.png)
+> - Sau đó phải gửi username, password là path `POST /login` ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-2.png)
+> - Rồi phải redirect sang path `GET /login2` để nhập code: ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-3.png)
+
+> Tạo macro để tự động hóa: ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-4.png)
+
+> Select all: ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-5.png)
+
+> Add role actions: ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-6.png) ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-7.png)
+
+> edit: ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-8.png)
+
+> Sau đó send cái path để gửi code sang intruder để dùng, nó sẽ tự thêm cái macro vào: ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-9.png)
+
+> add payload là `mfa-code`: ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-10.png) ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-11.png)
+
+> Cho luồng là 1 lần thôi, nếu nhiều quá thì sẽ bị detect ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-12.png) ![img](../asset/Authentication-vulnerabilities-8-2FA-bypass-using-a-brute-force-attack-13.png)
