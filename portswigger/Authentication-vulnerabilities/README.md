@@ -287,3 +287,67 @@
 > Bài này chỉ cần login tài khoản của usr victim và khi web bắt nhập code thì redirect sang path `my-account` là solve ![img](../asset/Authentication-vulnerabilities-6-2FA-simple-bypass-0.png)
 
 > Vì khi scan path thì thấy path này: ![img](../asset/Authentication-vulnerabilities-6-2FA-simple-bypass-1.png)
+
+---
+
+#### Flawed two-factor verification logic
+
+> Đôi khi logic sai sót trong quá trình xác thực 2FA là khi user login thành công, trang web không xác minh đầy đủ rằng một người dùng đang hoàn thành step thứ 2
+
+> Ví dụ: người dùng đăng nhập bằng thông tin đăng nhập bình thường của họ trong bước đầu tiên như sau:
+>
+> ```
+> POST /login-steps/first HTTP/1.1
+> Host: vulnerable-website.com
+> ...
+> username=carlos&password=qwerty
+> ```
+
+> Sau đó, họ được gán một cookie có liên quan đến tài khoản của họ, trước khi được chuyển sang bước thứ hai của quá trình đăng nhập:
+>
+> ```
+> HTTP/1.1 200 OK
+> Set-Cookie: account=carlos
+>
+> GET /login-steps/second HTTP/1.1
+> Cookie: account=carlos
+> ```
+
+> Khi gửi mã xác minh, yêu cầu sử dụng cookie này để xác định tài khoản mà người dùng đang cố gắng truy cập:
+>
+> ```
+> POST /login-steps/second HTTP/1.1
+> Host: vulnerable-website.com
+> Cookie: account=carlos
+> ...
+> verification-code=123456
+> ```
+
+> Trong trường hợp này, kẻ tấn công có thể đăng nhập bằng thông tin đăng nhập của chính họ nhưng sau đó thay đổi giá trị của cookie tài khoản thành bất kỳ tên người dùng tùy ý nào khi gửi mã xác minh.
+>
+> ```
+> POST /login-steps/second HTTP/1.1
+> Host: vulnerable-website.com
+> Cookie: account=victim-user
+> ...
+> verification-code=123456
+> ```
+
+> Điều này cực kỳ nguy hiểm nếu sau đó kẻ tấn công có thể cưỡng bức mã xác minh vì nó sẽ cho phép họ đăng nhập vào tài khoản của người dùng tùy ý dựa hoàn toàn vào tên người dùng của họ. Họ thậm chí sẽ không bao giờ cần biết mật khẩu của người dùng
+
+##### Lab: 2FA broken logic
+
+> Xác thực hai yếu tố của phòng thí nghiệm này dễ bị tấn công do logic sai sót của nó. Để giải quyết phòng thí nghiệm, hãy truy cập trang tài khoản của Carlos.
+
+> wiener:peter
+
+> Bài này login tài khoản đã được cho vào để lấy mã, qua `Email client` để xem code gửi về:
+> ![img](../asset/Authentication-vulnerabilities-7-2FA-broken-logic-0.png)
+
+> Tìm path `/login2` để thay đổi `verify=carlos` để lấy mã: ![img](../asset/Authentication-vulnerabilities-7-2FA-broken-logic-1.png)
+
+> Gửi sang intruder và đổi payload và sang attack brute force: ![img](../asset/Authentication-vulnerabilities-7-2FA-broken-logic-2.png) ![img](../asset/Authentication-vulnerabilities-7-2FA-broken-logic-3.png)
+
+> Tìm `Status code=302`: ![img](../asset/Authentication-vulnerabilities-7-2FA-broken-logic-4.png) ![img](../asset/Authentication-vulnerabilities-7-2FA-broken-logic-5.png)
+
+---
