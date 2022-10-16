@@ -447,3 +447,41 @@
 > Bài này bị dính XSS tại comment: ![img](../asset/Authentication-vulnerabilities-10-Offline-password-cracking-0.png)
 
 > Chèn script vào commit rồi gửi cookie qua server : ![img](../asset/Authentication-vulnerabilities-10-Offline-password-cracking-1.png) ![img](../asset/Authentication-vulnerabilities-10-Offline-password-cracking-2.png) ![img](../asset/Authentication-vulnerabilities-10-Offline-password-cracking-3.png)
+
+---
+
+### Resetting user passwords
+
+> Trong thực tế, một số người dùng thường sẽ quên mật khẩu, nên sẽ phải reset mật khẩu
+
+#### Sending passwords by email
+
+> Các trang web thường sẽ tạo mật khẩu mới và sẽ gửi cho user thông qua email. Thường sẽ hết hạn trong một khoảng thời gian ngắn
+
+---
+
+#### Resetting passwords using a URL
+
+> Một phương pháp reset passwd an toàn hơn là gửi cho user URL duy nhất và đưa tới trang change passwd
+>
+> ```
+> http://vulnerable-website.com/reset-password?user=victim-user
+> ```
+
+> Ví dụ trên thì nó có thể thay đổi user thành 1 user khác, cách triển khai tốt hơn là tạo token
+>
+> ```
+> http://vulnerable-website.com/reset-password?token=a0ba0d1cb3b63d13822572fcff1a241895d893f659164d4cc550b421ebdd48a8
+> ```
+
+> Khi user truy cập vào url thì backend sẽ kiểm tra xem token có tồn tại hay còn hiệu lực hay không, và sẽ bị hủy ngay khi passwd đã được đặt lại
+
+> Tuy nhiên, một số trang web cũng không thể xác thực lại mã thông báo khi biểu mẫu đặt lại được gửi. Trong trường hợp này, kẻ tấn công có thể chỉ cần truy cập biểu mẫu đặt lại từ tài khoản của chính họ, xóa mã thông báo và tận dụng trang này để đặt lại mật khẩu của người dùng tùy ý.
+
+##### Lab: Password reset broken logic
+
+> Des: Chức năng đặt lại mật khẩu của phòng thí nghiệm này dễ bị tấn công. Để giải quyết phòng thí nghiệm, hãy đặt lại mật khẩu của Carlos, sau đó đăng nhập và truy cập trang "Tài khoản của tôi" của anh ấy.
+
+> Your credentials: wiener:peter
+
+> Bài này chỉ cần vào forgot passwd để thay đổi passwd của user `wiener`. Vì token của `wiener` không hết hạn và chỉ cần thay tên username thành `carlos` là đổi được: ![img](../asset/Authentication-vulnerabilities-11-Password-reset-broken-logic-0.png) ![img](../asset/Authentication-vulnerabilities-11-Password-reset-broken-logic-1.png)
