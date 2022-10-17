@@ -147,6 +147,8 @@ Nó sẽ return một tợp hợp kết quả có 2 cột chứa cột a, b tron
 1. Có bao nhiêu cột
 2. Những loại dữ liệu của cột như string, int...
 
+---
+
 **Determining the number of columns required in an SQL injection UNION attack**
 Khi thực hiện UNION attack, có 2 cách để xác định có bao nhiêu cột:
 
@@ -186,3 +188,46 @@ Bài này có 3 bảng, thêm `' ORDER BY 1` tăng dần tới 3 thì có 3 bả
 
 C2 là thêm payload: `' UNION SELECT NULL--`, server trả về error thì thêm `, NULL` tới khi trả về response 200:
 ![img](../asset/sqli-3-SQL-injection-UNION-attack-determining-the-number-of-columns-returned-by-the-query-3.png) ![img](../asset/sqli-3-SQL-injection-UNION-attack-determining-the-number-of-columns-returned-by-the-query-4.png) ![img](../asset/sqli-3-SQL-injection-UNION-attack-determining-the-number-of-columns-returned-by-the-query-5.png)
+
+---
+
+**NOTE**
+
+1. Lý do sử dụng `NULL` vì các kiểu dữ liệu trong mỗi cột phải tương thích với nhau. NULL có thể thành mọi kiểu dữ liệu thường được sử dụng
+2. Trên `Oracle` mọi query `SELECT` phải sử dụng `FROM` và chỉ định 1 table valid. Oralce có một bảng là `dual`:
+
+```
+' UNION SELECT NULL FROM DUAL--
+```
+
+3. Tùy vào payload, comment là `--` hoặc `#`
+
+---
+
+**Finding columns with a useful data type in an SQL injection UNION attacks**
+
+> Tìm kiểu dữ liệu của từng cột. Vậy sao khi tìm được số lượng cột thì có thể thăm dò dữ liệu bằng cách gửi payload:
+
+```
+' UNION SELECT 'a',NULL,NULL,NULL--
+' UNION SELECT NULL,'a',NULL,NULL--
+' UNION SELECT NULL,NULL,'a',NULL--
+' UNION SELECT NULL,NULL,NULL,'a'--
+```
+
+Nếu dữ liệu không tương thích thì sẽ trả về error:
+
+```
+Conversion failed when converting the varchar value 'a' to data type int.
+```
+
+### Lab: SQL injection UNION attack, finding a column containing text
+
+> Des: Phòng thí nghiệm này chứa lỗ hổng SQL injection trong bộ lọc danh mục sản phẩm. Kết quả từ truy vấn được trả về trong phản hồi của ứng dụng, vì vậy bạn có thể sử dụng một cuộc tấn công UNION để lấy dữ liệu từ các bảng khác. Để xây dựng một cuộc tấn công như vậy, trước tiên bạn cần xác định số cột được trả về bởi truy vấn. Bạn có thể làm điều này bằng cách sử dụng một kỹ thuật bạn đã học trong phòng thí nghiệm trước đó. Bước tiếp theo là xác định một cột tương thích với dữ liệu chuỗi.
+
+> Phòng thí nghiệm sẽ cung cấp một giá trị ngẫu nhiên mà bạn cần để xuất hiện trong kết quả truy vấn. Để giải quyết phòng thí nghiệm, hãy thực hiện một cuộc tấn công SQL injection UNION trả về một hàng bổ sung chứa giá trị được cung cấp. Kỹ thuật này giúp bạn xác định cột nào tương thích với dữ liệu chuỗi.
+
+Sau khi xác định được số bảng bằng cách thêm `' UNION SELECT NULL, NULL, NULL--` vào thì thấy 3 bảng.
+
+Xác định trường dữ liệu bằng các `'UNION SELECT NULL, 'a', NULL--` thì biết bảng 2 là string, thấy trên tiêu đề bài có tên bảng, thay tên bảng đó vào sẽ solve:
+![img](../asset/sqli-4-SQL-injection-UNION-attack-finding-a-column-containing-text-0.png)
