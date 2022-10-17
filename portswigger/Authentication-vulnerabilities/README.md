@@ -485,3 +485,15 @@
 > Your credentials: wiener:peter
 
 > Bài này chỉ cần vào forgot passwd để thay đổi passwd của user `wiener`. Vì token của `wiener` không hết hạn và chỉ cần thay tên username thành `carlos` là đổi được: ![img](../asset/Authentication-vulnerabilities-11-Password-reset-broken-logic-0.png) ![img](../asset/Authentication-vulnerabilities-11-Password-reset-broken-logic-1.png)
+
+---
+
+> Nếu URL trong email được đặt lại tự động, thì URL này cũng có thể bị nhiễm vul đặt lại passwd. Trong case này, attacker có thể ăn cắp token của user another và sử dụng để thay đổi passwd của nó.
+
+##### Lab: Password reset poisoning via middleware
+
+> Des: Lab này dễ bị dính vul đặt lại passwd. Carlos bất cẩn nhấp vào bất kì liên kết nào trong email nhận được. Login vào tài khoản `wiener` , mọi mail được gửi đến tài khoản này đều có thể được đọc qua ứng dụng mail ở server khác:
+
+> Bài này mỗi lần đặt mật khẩu khác thì sẽ hết hạn token, nên không thể sử dụng lại nữa: ![img](../asset/Authentication-vulnerabilities-12-Password-reset-poisoning-via-middleware-0.png)
+
+> Sử dụng luôn server mà Lab cung cấp, thêm tại request header: `X-Forwarded-Host: server` để nó gửi token về server: ![img](../asset/Authentication-vulnerabilities-12-Password-reset-poisoning-via-middleware-1.png) ![img](../asset/Authentication-vulnerabilities-12-Password-reset-poisoning-via-middleware-2.png) ![img](../asset/Authentication-vulnerabilities-12-Password-reset-poisoning-via-middleware-3.png) ![img](../asset/Authentication-vulnerabilities-12-Password-reset-poisoning-via-middleware-4.png)
