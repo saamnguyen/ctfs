@@ -231,3 +231,55 @@ Sau khi xác định được số bảng bằng cách thêm `' UNION SELECT NUL
 
 Xác định trường dữ liệu bằng các `'UNION SELECT NULL, 'a', NULL--` thì biết bảng 2 là string, thấy trên tiêu đề bài có tên bảng, thay tên bảng đó vào sẽ solve:
 ![img](../asset/sqli-4-SQL-injection-UNION-attack-finding-a-column-containing-text-0.png)
+
+---
+
+**Using an SQL injection UNION attack to retrieve interesting data**
+
+> Khi đã xác định được số lượng cột, table thì có thể query được data.
+
+```
+' UNION SELECT username, password FROM users--
+```
+
+### Lab: SQL injection UNION attack, retrieving data from other tables
+
+> Des: Phòng thí nghiệm này chứa lỗ hổng SQL injection trong bộ lọc danh mục sản phẩm. Kết quả từ truy vấn được trả về trong phản hồi của ứng dụng, vì vậy bạn có thể sử dụng một cuộc tấn công UNION để lấy dữ liệu từ các bảng khác. Để xây dựng một cuộc tấn công như vậy, bạn cần kết hợp một số kỹ thuật bạn đã học trong các phòng thí nghiệm trước đó.
+
+> Cơ sở dữ liệu chứa một bảng khác được gọi là người dùng, với các cột được gọi là tên người dùng và mật khẩu.
+
+> Để giải quyết phòng thí nghiệm, hãy thực hiện một cuộc tấn công SQL injection UNION để truy xuất tất cả tên người dùng và mật khẩu, đồng thời sử dụng thông tin để đăng nhập với tư cách là người dùng quản trị viên.
+
+Đầu tiên sẽ xác định có bao nhiêu cột trên db, xác định trường giá trị sau đó query trên bảng users đề bài cho:
+![img](../asset/sqli-5-SQL-injection-UNION-attack-retrieving-data-from-other-tables-0.png) ![img](../asset/sqli-5-SQL-injection-UNION-attack-retrieving-data-from-other-tables-1.png) ![img](../asset/sqli-5-SQL-injection-UNION-attack-retrieving-data-from-other-tables-2.png) ![img](../asset/sqli-5-SQL-injection-UNION-attack-retrieving-data-from-other-tables-3.png) ![img](../asset/sqli-5-SQL-injection-UNION-attack-retrieving-data-from-other-tables-4.png)
+
+---
+
+**Retrieving multiple values within a single column**
+
+> Nối các chuỗi với nhau:
+
+```
+' UNION SELECT username || '~' || password FROM users--
+```
+
+Ki tự `||` là toán tử nối trên oracle
+->
+
+```
+...
+administrator~s3cure
+wiener~peter
+carlos~montoya
+...
+```
+
+### Lab: SQL injection UNION attack, retrieving multiple values in a single column
+
+> Des: Phòng thí nghiệm này chứa lỗ hổng SQL injection trong bộ lọc danh mục sản phẩm. Kết quả từ truy vấn được trả về trong phản hồi của ứng dụng, do đó bạn có thể sử dụng một cuộc tấn công UNION để lấy dữ liệu từ các bảng khác.
+
+> Cơ sở dữ liệu chứa một bảng khác được gọi là người dùng, với các cột được gọi là tên người dùng và mật khẩu.
+
+> Để giải quyết phòng thí nghiệm, hãy thực hiện một cuộc tấn công SQL injection UNION để truy xuất tất cả tên người dùng và mật khẩu, đồng thời sử dụng thông tin để đăng nhập với tư cách là người dùng quản trị viên.
+
+Xác định số cột và trường của cột: ![img](../asset/sqli-6-SQL-injection-UNION-attack-retrieving-multiple-values-in-a-single-column-0.png) ![img](../asset/sqli-6-SQL-injection-UNION-attack-retrieving-multiple-values-in-a-single-column-1.png)
