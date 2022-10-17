@@ -497,3 +497,19 @@
 > Bài này mỗi lần đặt mật khẩu khác thì sẽ hết hạn token, nên không thể sử dụng lại nữa: ![img](../asset/Authentication-vulnerabilities-12-Password-reset-poisoning-via-middleware-0.png)
 
 > Sử dụng luôn server mà Lab cung cấp, thêm tại request header: `X-Forwarded-Host: server` để nó gửi token về server: ![img](../asset/Authentication-vulnerabilities-12-Password-reset-poisoning-via-middleware-1.png) ![img](../asset/Authentication-vulnerabilities-12-Password-reset-poisoning-via-middleware-2.png) ![img](../asset/Authentication-vulnerabilities-12-Password-reset-poisoning-via-middleware-3.png) ![img](../asset/Authentication-vulnerabilities-12-Password-reset-poisoning-via-middleware-4.png)
+
+---
+
+#### Changing user passwords
+
+##### Lab: Password brute-force via password change
+
+> Des: Dễ bị brute force ở chức năng thay đổi passwd
+
+> Vì bài này có lỗi tại chức năng change passwd.
+
+> Khi đổi passwd, sẽ phải nhập 3 value là passwd current, new passwd, confirm new passwd.
+
+> Nếu currnt passwd mà sai sẽ bị block, nếu new và confirm không giống nhau thì sẽ trả về là `new passwords do not matchs`
+
+> Nên sẽ sử dụng, nhập mật khẩu hiện tại sai + 2 mật khẩu mới sai để intruder + grep match là `new paswd do not match`: ![img](../asset/Authentication-vulnerabilities-13-Password-brute-force-via-password-change-0.png) ![img](../asset/Authentication-vulnerabilities-13-Password-brute-force-via-password-change-1.png) ![img](../asset/Authentication-vulnerabilities-13-Password-brute-force-via-password-change-2.png) ![img](../asset/Authentication-vulnerabilities-13-Password-brute-force-via-password-change-3.png) ![img](../asset/Authentication-vulnerabilities-13-Password-brute-force-via-password-change-4.png)
