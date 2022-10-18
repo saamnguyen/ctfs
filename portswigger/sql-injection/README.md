@@ -283,3 +283,66 @@ carlos~montoya
 > Để giải quyết phòng thí nghiệm, hãy thực hiện một cuộc tấn công SQL injection UNION để truy xuất tất cả tên người dùng và mật khẩu, đồng thời sử dụng thông tin để đăng nhập với tư cách là người dùng quản trị viên.
 
 Xác định số cột và trường của cột: ![img](../asset/sqli-6-SQL-injection-UNION-attack-retrieving-multiple-values-in-a-single-column-0.png) ![img](../asset/sqli-6-SQL-injection-UNION-attack-retrieving-multiple-values-in-a-single-column-1.png)
+
+---
+
+**Examining the database**
+
+> Sau khi biết được thông tin về các lỗ hổng ban đầu SQL, sẽ cần phải khai thác thêm các thông tin khác về CSDL. Các thông tin này sẽ cho thêm các cách exploit khác, ví dụ như version của ORACLE:
+
+```
+SELECT * FROM v$version
+```
+
+Cũng có thể xác định các table nào tồn tại và nó chứa các cột nào:
+
+```
+SELECT * FROM information_schema.tables
+```
+
+---
+
+1. _Querying the database type and version_
+   > Các CSDL khác nhau sẽ cung cấp cách check version của từng loại:
+
+| DB Type          | Query                    |
+| ---------------- | ------------------------ |
+| Microsoft, MySQL | SELECT @version          |
+| Oracle           | SELECT \* FROM v$version |
+| PostgreSQL       | SELECT version()         |
+
+Ví dụ, sử dụng UNION attack:
+
+```
+' UNION SELECT @@version--
+```
+
+Return:
+
+```
+Microsoft SQL Server 2016 (SP2) (KB4052908) - 13.0.5026.0 (X64)
+Mar 18 2018 09:11:49
+Copyright (c) Microsoft Corporation
+Standard Edition (64-bit) on Windows Server 2016 Standard 10.0 <X64> (Build 14393: ) (Hypervisor)
+```
+
+### Lab: SQL injection attack, querying the database type and version on Oracle
+
+> Des: Phòng thí nghiệm này chứa lỗ hổng SQL injection trong bộ lọc danh mục sản phẩm. Bạn có thể sử dụng một cuộc tấn công UNION để lấy kết quả từ một truy vấn được đưa vào.
+
+> Để giải phòng thí nghiệm, hãy hiển thị chuỗi phiên bản cơ sở dữ liệu.
+
+DB của ORACLE:
+![img](../asset/sqli-7-SQL-injection-attack-querying-the-database-type-and-version-on-Oracle-0.png)
+
+Biết là DB có 2 cột khi thêm `' ORDER BY 1--` và tăng dần lên 2:
+![img](../asset/sqli-7-SQL-injection-attack-querying-the-database-type-and-version-on-Oracle-1.png)
+
+Cách check thứ 2 là dùng bảng `dual` trong Oracle:
+![img](../asset/sqli-7-SQL-injection-attack-querying-the-database-type-and-version-on-Oracle-2.png)
+
+Check trường dữ liệu của cột:
+![img](../asset/sqli-7-SQL-injection-attack-querying-the-database-type-and-version-on-Oracle-3.png)
+
+Solve:
+![img](../asset/sqli-7-SQL-injection-attack-querying-the-database-type-and-version-on-Oracle-4.png)
