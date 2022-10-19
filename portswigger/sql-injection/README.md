@@ -346,3 +346,19 @@ Check trường dữ liệu của cột:
 
 Solve:
 ![img](../asset/sqli-7-SQL-injection-attack-querying-the-database-type-and-version-on-Oracle-4.png)
+
+---
+
+### Lab: SQL injection attack, querying the database type and version on MySQL and Microsoft
+
+> Des: Phòng thí nghiệm này chứa lỗ hổng SQL injection trong bộ lọc danh mục sản phẩm. Bạn có thể sử dụng một cuộc tấn công UNION để lấy kết quả từ một truy vấn được đưa vào.
+
+> Để giải phòng thí nghiệm, hãy hiển thị chuỗi phiên bản cơ sở dữ liệu.
+
+Đầu tiên sẽ check các cột và table hiện có với query: `' UNION SELECT NULL, NULL#` vì nó là MySQL nên comment là `#`:
+![img](../asset/sqli-8-SQL-injection-attack-querying-the-database-type-and-version-on-MySQL-and-Microsoft-0.png) ![img](../asset/sqli-8-SQL-injection-attack-querying-the-database-type-and-version-on-MySQL-and-Microsoft-1.png)
+
+Check version với query `' UNION SELECT @@version, NULL#` phải `trl + U` trước khi gửi ở burp:
+![img](../asset/sqli-8-SQL-injection-attack-querying-the-database-type-and-version-on-MySQL-and-Microsoft-2.png)
+
+---
