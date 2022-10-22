@@ -456,3 +456,14 @@ Có thông tin rồi thì cứ theo dấu vết mà truy:
 
    Lấy data `' UNION SELECT USERNAME_abc, PASSWORD_abc FROM USERS_abd--`:
    ![img](../asset/sqli-10-SQL-injection-attack-listing-the-database-contents-on-Oracle-5.png)
+
+---
+
+## Blind SQL injection vulnerabilities
+
+> Blind SQL dựa vào các response trả về từ server
+
+- Boolean-base: chèn toán tử boolean vào query
+- Time-base: chèn thời gian vào query
+
+1. _Exploiting blind SQL injection by triggering conditional responses_
